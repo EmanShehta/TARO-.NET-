@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Text;
-using Taro.Repository.Identity;
+using Taro.Repository.Context;
 
 namespace Taro.API.ExtensionMethods
 {
@@ -21,7 +21,7 @@ namespace Taro.API.ExtensionMethods
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
