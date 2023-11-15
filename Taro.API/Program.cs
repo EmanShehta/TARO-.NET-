@@ -1,15 +1,14 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AutoMapper;
+using Core.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
+using System.Reflection;
 using Taro.API.Errors;
 using Taro.API.ExtenshionMethods;
 using Taro.API.ExtensionMethods;
-using Taro.Repository.Identity;
+using Taro.Core.Interfaces;
+using Taro.Repository.Context;
+using Taro.Services.Implementation;
+using Taro.Services.NewFolder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +17,13 @@ builder.Services.AddSwaggerServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddHttpClient();
-builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
+builder.Services.AddScoped<ICourseServices,CourseServices>();
+builder.Services.AddScoped<IVideoServices,VideoServices>();
+builder.Services.AddAutoMapper(typeof(GeneralMappingProfile));
 
 
 builder.Services.AddCors(opt =>
@@ -43,7 +45,7 @@ var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
 try
 {
-    var identityContext = services.GetRequiredService<AppIdentityDbContext>();
+    var identityContext = services.GetRequiredService<AppDbContext>();
     await identityContext.Database.MigrateAsync();
 
 }
@@ -52,6 +54,7 @@ catch (Exception ex)
     var logger = loggerFactory.CreateLogger<Program>();
     logger.LogError(ex, ex.Message);
 }
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
