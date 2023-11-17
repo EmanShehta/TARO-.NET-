@@ -1,7 +1,5 @@
-using AutoMapper;
 using Core.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Taro.API.Errors;
 using Taro.API.ExtenshionMethods;
 using Taro.API.ExtensionMethods;
@@ -11,7 +9,6 @@ using Taro.Services.Implementation;
 using Taro.Services.NewFolder;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllers();
 builder.Services.AddSwaggerServices();
 builder.Services.AddApplicationServices();
@@ -21,22 +18,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
+
 builder.Services.AddScoped<ICourseServices,CourseServices>();
 builder.Services.AddScoped<IVideoServices,VideoServices>();
+builder.Services.AddTransient<IRoleServices, RoleServices>();
 builder.Services.AddAutoMapper(typeof(GeneralMappingProfile));
 
 
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy(name: "CorsPolicy", builder =>
-    {
-        builder.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+builder.Services.AddCors(
+//    opt =>
+//{
+//    opt.AddPolicy("AllowAnyOrigin", builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//               .AllowAnyMethod()
+//               .AllowAnyHeader()
+//               ;
 
-    });
+//    });
 
-});
+//}
+);
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -59,9 +61,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    #region SeedRoles
+    using (var scop = app.Services.CreateScope())
+    {
+        var roleService = scop.ServiceProvider.GetRequiredService<IRoleServices>();
+        await roleService.SeedRolesAsync();
+    }
+    #endregion
 }
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors("CorsPolicy");
+app.UseCors();
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.UseStaticFiles();

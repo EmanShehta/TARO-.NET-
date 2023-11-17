@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
 using System.Text;
+using Taro.Core.Entities.Roles;
 using Taro.Repository.Context;
 
 namespace Taro.API.ExtensionMethods
@@ -13,7 +11,7 @@ namespace Taro.API.ExtensionMethods
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<AppUser, IdentityRole>(options =>
+            services.AddIdentity<AppUser, Role>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = false;
@@ -21,8 +19,10 @@ namespace Taro.API.ExtensionMethods
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
+            
             .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            ;
 
             services.AddAuthentication(options =>
             {
