@@ -37,22 +37,20 @@ namespace Taro.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(int.Parse(_config["Jwt:TokenLifetimeMinutes"])),
-                Issuer = _config["Jwt:Issuer"],
-                Audience = _config["Jwt:Audience"],
-                SigningCredentials = creds,
-            };
+         
+            var token = new JwtSecurityToken(
+              issuer: _config["Jwt:Issuer"],
+              audience: _config["Jwt:Audience"],
+              claims: claims,
+              notBefore: DateTime.UtcNow,
+              expires: DateTime.Now.AddMinutes(int.Parse(_config["Jwt:TokenLifetimeMinutes"])),
+              signingCredentials: creds);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var encryptedToken = tokenHandler.WriteToken(token);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return encryptedToken;
+            return jwt;
         }
     }
 }
