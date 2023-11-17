@@ -7,5 +7,6 @@
         public string lastName { get; set; }
 
         public Address address { get; set; }
+        public string RoleName { get; set; }
 
     }
