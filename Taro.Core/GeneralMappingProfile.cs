@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using System.Diagnostics.Metrics;
 using Taro.Core.Dtos.CourseDtos;
+using Taro.Core.Dtos.RoleDtos;
 using Taro.Core.Dtos.VideoDtos;
 using Taro.Core.Entities.Models.CourseModels;
+using Taro.Core.Entities.Roles;
 
 namespace Core.MappingProfiles
 {
@@ -10,15 +12,19 @@ namespace Core.MappingProfiles
     {
         public GeneralMappingProfile()
         {
-            #region
+            #region Course
             CreateMap<Course,AddCourseDto>().ReverseMap();
             CreateMap<Course, CourseDetailsDto>().ReverseMap();
         
             #endregion
 
-            #region
+            #region Video
             CreateMap<Video, AddVideoDto>().ReverseMap();
             CreateMap<Video, VideoDetailsDto>().ReverseMap();
+            #endregion
+
+            #region Role
+            CreateMap<Role, RoleAddModel>().ReverseMap();
             #endregion
         }
     }
