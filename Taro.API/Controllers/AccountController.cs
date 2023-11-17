@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using Taro.API.Dtos;
 using Taro.API.Errors;
+using Taro.Core.Dtos.Responses;
 using Taro.Repository.Services;
 
 namespace Taro.API.Controllers
@@ -38,9 +39,11 @@ namespace Taro.API.Controllers
                 firstName = registerDto.firstName,
                 lastName = registerDto.LastName,
                 Email = registerDto.Email,
-                UserName = registerDto.Email.Split('@')[0]
+                UserName = registerDto.Email.Split('@')[0],
+                RoleName = registerDto.RoleName
             };
             var result = await _userManager.CreateAsync(newUser, registerDto.Password);
+            await _userManager.AddToRoleAsync(newUser, newUser.RoleName);
             if (!result.Succeeded)
             {
 
@@ -74,15 +77,23 @@ namespace Taro.API.Controllers
             {
                 return Unauthorized(new ApiResponse(401, "The password is incorrect."));
             }
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles is null || roles.Count == 0)
+            {
+                return new UserDto { };
+            }
             var userDto = new UserDto
             {
                 firstName = user.firstName,
                 lastName = user.lastName,
                 Email = user.Email,
-                Token = await _tokenService.CreateTokenAsync(user, _userManager)
+                Token = await _tokenService.CreateTokenAsync(user, _userManager),
+                Role = roles.FirstOrDefault()
             };
 
-            await _tokenService.CreateTokenAsync(user, _userManager);
+            //await _tokenService.CreateTokenAsync(user, _userManager);
+
             return Ok(userDto);
         }
 
