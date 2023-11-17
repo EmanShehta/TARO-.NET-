@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Taro.Core.Dtos.Responses;
 using Taro.Core.Dtos.VideoDtos;
 using Taro.Core.Interfaces;
@@ -7,6 +8,7 @@ namespace Taro.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Instructor")]
     public class VideoController : ControllerBase
     {
         private readonly IVideoServices _videoServices;
@@ -38,8 +40,9 @@ namespace Taro.API.Controllers
         /// </summary>
         /// <response code="200">Return Specific Video Details </response>
         /// <response code="400">something goes wrong in backend</response>
-        [HttpGet("GetGetVideo/{Id}")]
+        [HttpGet("GetVideo/{Id}")]
         [ProducesResponseType(typeof(Response<VideoDetailsDto>), 200)]
+        [Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetVideo([FromRoute] int Id)
         {
             var response = await _videoServices.GetVideo(Id);
@@ -58,6 +61,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpGet("GetVideosInCourse/{Id}")]
         [ProducesResponseType(typeof(Response<List<VideoDetailsDto>>), 200)]
+        [Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetVideosInCourse([FromRoute]long Id)
         {
             var response = await _videoServices.GetCourseVideos(Id);
