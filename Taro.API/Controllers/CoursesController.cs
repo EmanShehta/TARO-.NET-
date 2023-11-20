@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Taro.Core.Dtos.CourseDtos;
 using Taro.Core.Dtos.Responses;
-using Taro.Core.Dtos.VideoDtos;
 using Taro.Core.Entities.Models.CourseModels;
 using Taro.Core.Interfaces;
 
@@ -11,7 +9,8 @@ namespace Taro.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Instructor")]
+    [Authorize]
+    //[Authorize(Roles = "Instructor")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseServices _courseService;
@@ -46,7 +45,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpGet("GetCourse/{Id}")]
         [ProducesResponseType(typeof(Response<CourseDetailsDto>), 200)]
-        [Authorize(Roles = "Instructor , Student")]
+        //[Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetCourse([FromRoute]long Id)
         {
             var response = await _courseService.GetcourseDetails(Id);
@@ -65,7 +64,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpPut("RateCourse/{Id}")]
         [ProducesResponseType(typeof(Response<bool>), 200)]
-        [Authorize(Roles = "Student")]
+        //[Authorize(Roles = "Student")]
         public async Task<IActionResult> RateCourse(RateCourseDto rateCourseDto)
         {
             var response = await _courseService.RateCourse(rateCourseDto);
@@ -103,7 +102,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpGet("GetAllCourses")]
         [ProducesResponseType(typeof(Response<List<CourseDetailsDto>>), 200)]
-        [Authorize(Roles = "Instructor , Student")]
+        //[Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetAllCourses()
         {
             var response = await _courseService.GetAllCourses();

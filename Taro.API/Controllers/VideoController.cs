@@ -42,7 +42,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpGet("GetVideo/{Id}")]
         [ProducesResponseType(typeof(Response<VideoDetailsDto>), 200)]
-        [Authorize(Roles = "Instructor , Student")]
+        //[Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetVideo([FromRoute] int Id)
         {
             var response = await _videoServices.GetVideo(Id);
@@ -61,7 +61,7 @@ namespace Taro.API.Controllers
         /// <response code="400">something goes wrong in backend</response>
         [HttpGet("GetVideosInCourse/{Id}")]
         [ProducesResponseType(typeof(Response<List<VideoDetailsDto>>), 200)]
-        [Authorize(Roles = "Instructor , Student")]
+        //[Authorize(Roles = "Instructor , Student")]
         public async Task<IActionResult> GetVideosInCourse([FromRoute]long Id)
         {
             var response = await _videoServices.GetCourseVideos(Id);
