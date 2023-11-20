@@ -14,6 +14,7 @@ namespace Taro.Repository.Context
         }
         public DbSet<Course> courses { get; set; }
         public DbSet<Video> videos { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
