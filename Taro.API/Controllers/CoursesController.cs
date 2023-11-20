@@ -9,7 +9,7 @@ namespace Taro.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     //[Authorize(Roles = "Instructor")]
     public class CoursesController : ControllerBase
     {

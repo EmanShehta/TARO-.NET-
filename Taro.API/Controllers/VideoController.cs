@@ -8,7 +8,7 @@ namespace Taro.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Instructor")]
+  //  [Authorize(Roles = "Instructor")]
     public class VideoController : ControllerBase
     {
         private readonly IVideoServices _videoServices;

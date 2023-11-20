@@ -25,20 +25,13 @@ builder.Services.AddTransient<IRoleServices, RoleServices>();
 builder.Services.AddAutoMapper(typeof(GeneralMappingProfile));
 
 
-builder.Services.AddCors(
-//    opt =>
-//{
-//    opt.AddPolicy("AllowAnyOrigin", builder =>
-//    {
-//        builder.AllowAnyOrigin()
-//               .AllowAnyMethod()
-//               .AllowAnyHeader()
-//               ;
-
-//    });
-
-//}
-);
+builder.Services.AddCors(opt =>
+{ opt.AddDefaultPolicy(
+    policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -71,12 +64,21 @@ if (app.Environment.IsDevelopment())
     #endregion
 }
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors();
+
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.UseStaticFiles();
+
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
